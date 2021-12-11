@@ -1,0 +1,60 @@
+CMD:buycase(playerid)
+{
+    if(PlayerInfo[playerid][pDonatemoney2] < 15000) return SendClientMessage(playerid,COLOR_GREY, "Для открытия этого кейса вам необходимо иметь 15.000 DonateMoney.");
+    PlayerInfo[playerid][pRule] += 1; SendClientMessage(playerid, COLOR_GREY, "Вы успешно купили кейс. Открыть: /opencase");
+    PlayerInfo[playerid][pDonatemoney2] -= 15000;
+    UpdatePlayerData("UPDATE `"TABLE_ACCOUNT"` SET `rule` = '%d', `donate` = '%d' WHERE `id` = '%d'", PlayerInfo[playerid][pRule], PlayerInfo[playerid][pDonatemoney2], PlayerInfo[playerid][pID]);
+    return true;
+}
+CMD:opencase(playerid)
+{
+  if(PlayerInfo[playerid][pRule] < 1) return SendClientMessage(playerid, COLOR_GREY, "Вы не имеете кейса. Купить: /buycase");
+    if(GetPVarInt(playerid,"opencase") > gettime()) return SendClientMessage(playerid, COLOR_GREY, "Вы уже открыли кейс. Следующий кейс можно открыть через 30 секунд!");
+    SetPVarInt(playerid,"opencase",gettime()+30);
+  new string[150];
+    switch(random(45))
+    {
+     case 0..5: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {6153F5}+10.000 донат-очков. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonatemoney2] +=10000; }
+      case 6..11: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {6153F5}+15.000 донат-очков. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonatemoney2] +=15000; }
+      case 12..14: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {6153F5}+30.000 донат-очков. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonatemoney2] +=30000; }
+      case 15..17: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {1BDFF5}+1РУБ. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonateRub] +=1; }
+      case 18..21: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {1BDFF5}+5РУБ. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonateRub] +=5; }
+      case 22..25: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {1BDFF5}+10РУБ. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonateRub] +=10; }
+     case 26..28: {
+      format(string, sizeof(string), "{E60008}[JACKPOT] %s открывает Донат-кейс и ему выпадает: {6181F5}+103РУБ. Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pDonateRub] +=103; }
+      case 29..33: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {C553F5}НИЧЕГО. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string); }
+      case 34..37: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {1BF57A}AK-47. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), GiveWeapon(playerid, 30, 300); }
+      case 38..40: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {C553F5}+3 часа игры. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][pExp] += 3; }
+      case 41..43: {
+      format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {C553F5}40 грамм Кокаина. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string), PlayerInfo[playerid][p_drugs][0] += 40; }
+  case 44..45: {
+   format(string, sizeof(string), "{FFD700}[CASE] %s открывает Донат-кейс и ему выпадает: {EC1E09}HELPER 4 LVL. {FFD700}Поздравим!", PlayerInfo[playerid][pNames]);
+      SendClientMessageToAll(-1, string);
+   PlayerInfo[playerid][pHelper] = 4;
+   PlayerInfo[playerid][pHotvet] = 0;
+   UpdatePlayerData("UPDATE `"TABLE_ACCOUNT"` SET `helper` = '4', `helper_asks` = '0' WHERE `id` = '%d'", PlayerInfo[playerid][pID]); }
+   }
+    PlayerInfo[playerid][pRule] -= 1;
+    UpdatePlayerData("UPDATE `"TABLE_ACCOUNT"` SET `rule` = '%d', `rub` = '%d' WHERE `id` = '%d'", PlayerInfo[playerid][pRule], PlayerInfo[playerid][pDonateRub], PlayerInfo[playerid][pID]);
+    return true;
+}
